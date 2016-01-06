@@ -11,3 +11,11 @@ def create_master_cell(manager):
     cell.add_component(Clonable(True))
 
     return cell
+
+
+def create_cells(manager, number_of_cells):
+    """Create a list of basic cells
+    """
+
+    for i in range(number_of_cells):
+        manager.create_entity()
