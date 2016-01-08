@@ -16,3 +16,11 @@ class Clonable(Component):
     """
     def __init__(self):
         Component.__init__(self, True)
+
+
+class Mortality(Component):
+    """Define when an entity should die
+    """
+    def __init__(self, at):
+        Component.__init__(self, at)
+        self.die_at = at

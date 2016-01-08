@@ -1,4 +1,4 @@
-from pigule.components import Age, Clonable
+from pigule.components import Age, Clonable, Mortality
 
 
 def create_master_cell(manager):
@@ -21,3 +21,5 @@ def create_cells(manager, number_of_cells):
     for i in range(number_of_cells):
         cell = manager.create_entity()
         cell.add_component(Age())
+        # FIXME: define a constant for Mortality
+        cell.add_component(Mortality(42))
