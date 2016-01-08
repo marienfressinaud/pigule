@@ -8,7 +8,7 @@ def create_master_cell(manager):
 
     """
     cell = manager.create_entity()
-    cell.add_component(Clonable(True))
+    cell.add_component(Clonable())
 
     return cell
 
