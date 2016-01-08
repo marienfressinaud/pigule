@@ -4,7 +4,7 @@ import time
 from pytity.manager import Manager
 
 import pigule.archetypes as archetypes
-from pigule.processors import Reproduction
+from pigule.processors import Reproduction, Time
 
 
 if __name__ == '__main__':
@@ -12,6 +12,7 @@ if __name__ == '__main__':
     archetypes.create_master_cell(manager)
 
     Reproduction().register_to(manager)
+    Time().register_to(manager)
 
     is_running = True
     delta = 1
