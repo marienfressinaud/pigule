@@ -1,4 +1,4 @@
-from pigule.components import Age, Clonable
+from pigule.components import Age, Clonable, Mortality
 from pigule.processors import Reproduction, Time
 
 
@@ -19,3 +19,14 @@ def test_time(manager):
     manager.update(10)
 
     assert age.value == 10
+
+
+def test_time_kills_cells(manager):
+    entity = manager.create_entity()
+    entity.add_component(Age())
+    entity.add_component(Mortality(10))
+    Time().register_to(manager)
+
+    manager.update(10)
+
+    assert len(list(manager.entities())) == 0

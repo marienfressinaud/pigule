@@ -1,7 +1,7 @@
 from pytity.processor import EntityProcessor, Processor
 
 import pigule.archetypes as archetypes
-from pigule.components import Age, Clonable
+from pigule.components import Age, Clonable, Mortality
 
 
 class Reproduction(Processor):
@@ -18,3 +18,7 @@ class Time(EntityProcessor):
     def update_entity(self, delta, entity):
         age = entity.get_component(Age)
         age.inc(delta)
+
+        mortality = entity.get_component(Mortality)
+        if mortality is not None and age.value >= mortality.die_at:
+            self.manager.kill_entity(entity)
