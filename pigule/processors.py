@@ -2,7 +2,24 @@ from pytity.processor import EntityProcessor, Processor
 
 import pigule.constants as constants
 import pigule.archetypes as archetypes
-from pigule.components import Age, Clonable, Mortality
+from pigule.components import Age, Clonable, Mood, Mortality
+
+
+class MoodSwings(EntityProcessor):
+    """Manage mood changes for cells
+    """
+    def __init__(self):
+        EntityProcessor.__init__(self)
+        self.needed = [Mood]
+
+    def update_entity(self, delta, cell):
+        current_weather = self.manager.environment['weather']
+        mood = cell.get_component(Mood)
+        mood.weather_changing(current_weather)
+
+        clonable = cell.get_component(Clonable)
+        if clonable is not None:
+            clonable.fertility = 1 if mood.value == constants.MOOD_HAPPY else 0.25
 
 
 class Reproduction(EntityProcessor):

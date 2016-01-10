@@ -5,12 +5,13 @@ from pytity.manager import Manager
 
 import pigule.constants as constants
 import pigule.archetypes as archetypes
-from pigule.processors import Reproduction, Time, Weather
+from pigule.processors import MoodSwings, Reproduction, Time, Weather
 
 
 if __name__ == '__main__':
     manager = Manager()
 
+    MoodSwings().register_to(manager)
     Reproduction().register_to(manager)
     Time().register_to(manager)
     Weather(constants.WEATHER_SUNNY, 10).register_to(manager)

@@ -1,6 +1,33 @@
 import pigule.constants as constants
-from pigule.components import Age, Clonable, Mortality
-from pigule.processors import Reproduction, Time, Weather
+from pigule.components import Age, Clonable, Mood, Mortality
+from pigule.processors import MoodSwings, Reproduction, Time, Weather
+
+
+def test_mood_swings(manager):
+    cell = manager.create_entity()
+    mood = Mood(manager.environment['weather'])
+    cell.add_component(mood)
+    MoodSwings().register_to(manager)
+
+    assert mood.value == constants.MOOD_HAPPY
+
+    manager.environment['weather'] = constants.WEATHER_RAINY
+    manager.update(1)
+
+    assert mood.value == constants.MOOD_SAD
+
+
+def test_mood_swings_impacts_fertility(manager_with_master_cell):
+    master_cell = next(manager_with_master_cell.entities())
+    clonable = master_cell.get_component(Clonable)
+    MoodSwings().register_to(manager_with_master_cell)
+
+    assert clonable.fertility == 1
+
+    manager_with_master_cell.environment['weather'] = constants.WEATHER_RAINY
+    manager_with_master_cell.update(1)
+
+    assert clonable.fertility == 0.25
 
 
 def test_reproduction(manager_with_master_cell):
