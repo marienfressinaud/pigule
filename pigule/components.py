@@ -1,5 +1,7 @@
 from pytity.component import Component
 
+import pigule.constants as constants
+
 
 class Age(Component):
     """Define the age of a cell
@@ -25,6 +27,17 @@ class Clonable(Component):
         self.time_of_incubation %= 1
 
         return number_to_clone
+
+
+class Mood(Component):
+    """Define the mood of a cell
+    """
+    def __init__(self, weather):
+        Component.__init__(self, None)
+        self.weather_changing(weather)
+
+    def weather_changing(self, weather):
+        self.value = constants.MOOD_HAPPY if weather == constants.WEATHER_SUNNY else constants.MOOD_SAD
 
 
 class Mortality(Component):
