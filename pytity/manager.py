@@ -11,6 +11,7 @@ class Manager(object):
         self.processor_store = []
         self.entity_store = {}
         self.created_entities = 0
+        self.environment = {}
 
     def create_entity(self):
         """Create, store and return an entity.

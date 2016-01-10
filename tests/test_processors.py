@@ -1,5 +1,33 @@
-from pigule.components import Age, Clonable, Mortality
-from pigule.processors import Reproduction, Time, Weather
+import pigule.constants as constants
+from pigule.components import Age, Clonable, Mood, Mortality
+from pigule.processors import MoodSwings, Reproduction, Time, Weather
+
+
+def test_mood_swings(manager):
+    cell = manager.create_entity()
+    mood = Mood(manager.environment['weather'])
+    cell.add_component(mood)
+    MoodSwings().register_to(manager)
+
+    assert mood.value == constants.MOOD_HAPPY
+
+    manager.environment['weather'] = constants.WEATHER_RAINY
+    manager.update(1)
+
+    assert mood.value == constants.MOOD_SAD
+
+
+def test_mood_swings_impacts_fertility(manager_with_master_cell):
+    master_cell = next(manager_with_master_cell.entities())
+    clonable = master_cell.get_component(Clonable)
+    MoodSwings().register_to(manager_with_master_cell)
+
+    assert clonable.fertility == 1
+
+    manager_with_master_cell.environment['weather'] = constants.WEATHER_RAINY
+    manager_with_master_cell.update(1)
+
+    assert clonable.fertility == 0.25
 
 
 def test_reproduction(manager_with_master_cell):
@@ -33,31 +61,40 @@ def test_time_kills_cells(manager):
 
 
 def test_weather(manager):
-    weather = Weather(Weather.SUNNY, 10)
+    weather = Weather(constants.WEATHER_SUNNY, 10)
     weather.register_to(manager)
 
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
     manager.update(10)
-    assert weather.current_weather == Weather.RAINY
+    assert weather.current_weather == constants.WEATHER_RAINY
     manager.update(10)
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
 
 
 def test_weather_does_not_update_if_cycle_is_incomplete(manager):
-    weather = Weather(Weather.SUNNY, 10)
+    weather = Weather(constants.WEATHER_SUNNY, 10)
     weather.register_to(manager)
 
     manager.update(5)
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
     manager.update(5)
-    assert weather.current_weather == Weather.RAINY
+    assert weather.current_weather == constants.WEATHER_RAINY
     manager.update(5)
-    assert weather.current_weather == Weather.RAINY
+    assert weather.current_weather == constants.WEATHER_RAINY
 
 
 def test_weather_is_aware_of_long_delta_gap(manager):
-    weather = Weather(Weather.SUNNY, 10)
+    weather = Weather(constants.WEATHER_SUNNY, 10)
     weather.register_to(manager)
 
     manager.update(20)
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
+
+
+def test_weather_maintains_manager_environment_up_to_date(manager):
+    weather = Weather(constants.WEATHER_RAINY, 10)
+    weather.register_to(manager)
+
+    assert manager.environment['weather'] == constants.WEATHER_RAINY
+    manager.update(10)
+    assert manager.environment['weather'] == constants.WEATHER_SUNNY
