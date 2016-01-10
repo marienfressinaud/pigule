@@ -1,5 +1,6 @@
 from pytity.processor import EntityProcessor, Processor
 
+import pigule.constants as constants
 import pigule.archetypes as archetypes
 from pigule.components import Age, Clonable, Mortality
 
@@ -41,9 +42,6 @@ class Time(EntityProcessor):
 class Weather(Processor):
     """Manage weather of the game
     """
-    SUNNY = 'sunny'
-    RAINY = 'rainy'
-
     def __init__(self, initial_weather, cycle_frequence):
         Processor.__init__(self)
         self.current_weather = initial_weather
@@ -60,4 +58,4 @@ class Weather(Processor):
         self.current_cycle = delta_from_last_update % self.cycle_frequence
 
     def switch(self, weather):
-        return self.RAINY if weather == self.SUNNY else self.SUNNY
+        return constants.WEATHER_RAINY if weather == constants.WEATHER_SUNNY else constants.WEATHER_SUNNY

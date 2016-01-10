@@ -1,3 +1,4 @@
+import pigule.constants as constants
 from pigule.components import Age, Clonable, Mortality
 from pigule.processors import Reproduction, Time, Weather
 
@@ -33,31 +34,31 @@ def test_time_kills_cells(manager):
 
 
 def test_weather(manager):
-    weather = Weather(Weather.SUNNY, 10)
+    weather = Weather(constants.WEATHER_SUNNY, 10)
     weather.register_to(manager)
 
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
     manager.update(10)
-    assert weather.current_weather == Weather.RAINY
+    assert weather.current_weather == constants.WEATHER_RAINY
     manager.update(10)
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
 
 
 def test_weather_does_not_update_if_cycle_is_incomplete(manager):
-    weather = Weather(Weather.SUNNY, 10)
+    weather = Weather(constants.WEATHER_SUNNY, 10)
     weather.register_to(manager)
 
     manager.update(5)
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
     manager.update(5)
-    assert weather.current_weather == Weather.RAINY
+    assert weather.current_weather == constants.WEATHER_RAINY
     manager.update(5)
-    assert weather.current_weather == Weather.RAINY
+    assert weather.current_weather == constants.WEATHER_RAINY
 
 
 def test_weather_is_aware_of_long_delta_gap(manager):
-    weather = Weather(Weather.SUNNY, 10)
+    weather = Weather(constants.WEATHER_SUNNY, 10)
     weather.register_to(manager)
 
     manager.update(20)
-    assert weather.current_weather == Weather.SUNNY
+    assert weather.current_weather == constants.WEATHER_SUNNY
