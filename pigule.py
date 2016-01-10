@@ -13,8 +13,7 @@ if __name__ == '__main__':
 
     Reproduction().register_to(manager)
     Time().register_to(manager)
-    weather = Weather(constants.WEATHER_SUNNY, 10)
-    weather.register_to(manager)
+    Weather(constants.WEATHER_SUNNY, 10).register_to(manager)
 
     archetypes.create_master_cell(manager)
 
@@ -23,7 +22,7 @@ if __name__ == '__main__':
     while is_running:
         try:
             number_of_cells = len(list(manager.entities()))
-            current_weather = '☀' if weather.current_weather == constants.WEATHER_SUNNY else '☔'
+            current_weather = '☀' if manager.environment['weather'] == constants.WEATHER_SUNNY else '☔'
             print('\rNumber of cells: {0} (weather: {1})'.format(number_of_cells, current_weather), end='')
             sys.stdout.flush()
 

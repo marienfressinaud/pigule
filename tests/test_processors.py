@@ -62,3 +62,12 @@ def test_weather_is_aware_of_long_delta_gap(manager):
 
     manager.update(20)
     assert weather.current_weather == constants.WEATHER_SUNNY
+
+
+def test_weather_maintains_manager_environment_up_to_date(manager):
+    weather = Weather(constants.WEATHER_RAINY, 10)
+    weather.register_to(manager)
+
+    assert manager.environment['weather'] == constants.WEATHER_RAINY
+    manager.update(10)
+    assert manager.environment['weather'] == constants.WEATHER_SUNNY

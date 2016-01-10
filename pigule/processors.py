@@ -48,12 +48,17 @@ class Weather(Processor):
         self.cycle_frequence = cycle_frequence
         self.current_cycle = 0
 
+    def register_to(self, manager):
+        Processor.register_to(self, manager)
+        self.manager.environment['weather'] = self.current_weather
+
     def update(self, delta):
         delta_from_last_update = self.current_cycle + delta
         switch_number = delta_from_last_update // self.cycle_frequence
 
         if switch_number % 2 == 1:
             self.current_weather = self.switch(self.current_weather)
+            self.manager.environment['weather'] = self.current_weather
 
         self.current_cycle = delta_from_last_update % self.cycle_frequence
 
