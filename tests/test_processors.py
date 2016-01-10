@@ -1,5 +1,5 @@
 from pigule.components import Age, Clonable, Mortality
-from pigule.processors import Reproduction, Time
+from pigule.processors import Reproduction, Time, Weather
 
 
 def test_reproduction(manager_with_master_cell):
@@ -30,3 +30,34 @@ def test_time_kills_cells(manager):
     manager.update(10)
 
     assert len(list(manager.entities())) == 0
+
+
+def test_weather(manager):
+    weather = Weather(Weather.SUNNY, 10)
+    weather.register_to(manager)
+
+    assert weather.current_weather == Weather.SUNNY
+    manager.update(10)
+    assert weather.current_weather == Weather.RAINY
+    manager.update(10)
+    assert weather.current_weather == Weather.SUNNY
+
+
+def test_weather_does_not_update_if_cycle_is_incomplete(manager):
+    weather = Weather(Weather.SUNNY, 10)
+    weather.register_to(manager)
+
+    manager.update(5)
+    assert weather.current_weather == Weather.SUNNY
+    manager.update(5)
+    assert weather.current_weather == Weather.RAINY
+    manager.update(5)
+    assert weather.current_weather == Weather.RAINY
+
+
+def test_weather_is_aware_of_long_delta_gap(manager):
+    weather = Weather(Weather.SUNNY, 10)
+    weather.register_to(manager)
+
+    manager.update(20)
+    assert weather.current_weather == Weather.SUNNY
