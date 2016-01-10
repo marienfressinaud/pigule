@@ -4,12 +4,22 @@ import pigule.archetypes as archetypes
 from pigule.components import Age, Clonable, Mortality
 
 
-class Reproduction(Processor):
+class Reproduction(EntityProcessor):
     """Manage reproduction of clonable cells
     """
-    def update(self, delta):
-        clonable_cells = list(self.manager.entities_by_type(Clonable))
-        archetypes.create_cells(self.manager, len(clonable_cells))
+    def __init__(self):
+        EntityProcessor.__init__(self)
+        self.needed = [Clonable]
+
+    def pre_update(self, delta):
+        self.number_to_clone = 0
+
+    def update_entity(self, delta, cell):
+        clonable = cell.get_component(Clonable)
+        self.number_to_clone += clonable.incubate(delta)
+
+    def post_update(self, delta):
+        archetypes.create_cells(self.manager, self.number_to_clone)
 
 
 class Time(EntityProcessor):

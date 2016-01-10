@@ -12,10 +12,19 @@ class Age(Component):
 
 
 class Clonable(Component):
-    """Define if a cell can be cloned or not
+    """Define fertility of a cell and frequency of its "clonability"
     """
-    def __init__(self):
-        Component.__init__(self, True)
+    def __init__(self, fertility=1):
+        Component.__init__(self, fertility)
+        self.fertility = fertility
+        self.time_of_incubation = 0
+
+    def incubate(self, time):
+        self.time_of_incubation += self.fertility * time
+        number_to_clone = int(self.time_of_incubation)
+        self.time_of_incubation %= 1
+
+        return number_to_clone
 
 
 class Mortality(Component):
