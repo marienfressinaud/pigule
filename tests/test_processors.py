@@ -11,9 +11,9 @@ def test_reproduction(manager_with_master_cell):
 
 
 def test_time(manager):
-    entity = manager.create_entity()
+    cell = manager.create_entity()
     age = Age()
-    entity.add_component(age)
+    cell.add_component(age)
     Time().register_to(manager)
 
     manager.update(10)
@@ -22,9 +22,9 @@ def test_time(manager):
 
 
 def test_time_kills_cells(manager):
-    entity = manager.create_entity()
-    entity.add_component(Age())
-    entity.add_component(Mortality(10))
+    cell = manager.create_entity()
+    cell.add_component(Age())
+    cell.add_component(Mortality(10))
     Time().register_to(manager)
 
     manager.update(10)
