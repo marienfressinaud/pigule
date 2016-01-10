@@ -1,5 +1,7 @@
 # Pigule
 
+[![Build Status](https://travis-ci.org/marienfressinaud/pigule.svg?branch=master)](https://travis-ci.org/marienfressinaud/pigule)
+
 Pigule est un jeu de simulation de vie à base de cellules. Le but est de développer
 sa colonie de cellules sans perdre sa mère-nouricière.
 
