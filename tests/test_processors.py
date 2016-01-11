@@ -1,6 +1,7 @@
 import pigule.constants as constants
+import pigule.archetypes as archetypes
 from pigule.components import Age, Clonable, Mood, Mortality
-from pigule.processors import MoodSwings, Reproduction, Time, Weather
+from pigule.processors import Attack, MoodSwings, Reproduction, Time, Weather
 
 
 def test_mood_swings(manager):
@@ -96,3 +97,64 @@ def test_weather_maintains_manager_environment_up_to_date(manager):
     assert manager.environment['weather'] == constants.WEATHER_RAINY
     manager.update(10)
     assert manager.environment['weather'] == constants.WEATHER_SUNNY
+
+
+def test_attack(manager):
+    archetypes.create_cells(manager, 1)
+    Attack().register_to(manager)
+
+    manager.update(1)
+    assert len(list(manager.entities())) == 0
+
+
+def test_attack_master_cell_can_die(manager_with_master_cell):
+    Attack().register_to(manager_with_master_cell)
+
+    manager_with_master_cell.update(1)
+    assert len(list(manager_with_master_cell.entities())) == 0
+
+
+def test_attack_master_cell_does_not_die_if_other_cell(manager_with_master_cell):
+    archetypes.create_cells(manager_with_master_cell, 1)
+    Attack(max_to_kill=2).register_to(manager_with_master_cell)
+
+    manager_with_master_cell.update(1)
+    assert len(list(manager_with_master_cell.entities_by_type(Clonable))) == 1
+
+
+def test_attack_do_not_kill_more_than_x_cells_at_a_time(manager):
+    archetypes.create_cells(manager, 10)
+    Attack(max_to_kill=5).register_to(manager)
+
+    manager.update(1)
+    assert len(list(manager.entities())) == 5
+    manager.update(1)
+    assert len(list(manager.entities())) == 0
+
+
+def test_attack_depends_on_time(manager):
+    archetypes.create_cells(manager, 10)
+    Attack(max_to_kill=5).register_to(manager)
+
+    manager.update(2)
+    assert len(list(manager.entities())) == 0
+
+
+def test_attack_depends_on_frequence(manager):
+    archetypes.create_cells(manager, 1)
+    Attack(frequence=5).register_to(manager)
+
+    manager.update(1)
+    assert len(list(manager.entities())) == 1
+    manager.update(4)
+    assert len(list(manager.entities())) == 0
+
+
+def test_attack_max_to_kill_and_frequence_are_correctly_impacted(manager):
+    archetypes.create_cells(manager, 15)
+    Attack(frequence=2, max_to_kill=5).register_to(manager)
+
+    manager.update(5)
+    assert len(list(manager.entities())) == 5
+    manager.update(1)
+    assert len(list(manager.entities())) == 0
