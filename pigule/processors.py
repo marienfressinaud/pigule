@@ -17,10 +17,6 @@ class MoodSwings(EntityProcessor):
         mood = cell.get_component(Mood)
         mood.weather_changing(current_weather)
 
-        clonable = cell.get_component(Clonable)
-        if clonable is not None:
-            clonable.fertility = 1 if mood.value == constants.MOOD_HAPPY else 0.25
-
 
 class Reproduction(EntityProcessor):
     """Manage reproduction of clonable cells
@@ -34,7 +30,10 @@ class Reproduction(EntityProcessor):
 
     def update_entity(self, delta, cell):
         clonable = cell.get_component(Clonable)
-        self.number_to_clone += clonable.incubate(delta)
+        mood = cell.get_component(Mood)
+        mood_impact = 1 if mood is None else mood.impact()
+
+        self.number_to_clone += clonable.incubate(delta, mood_impact)
 
     def post_update(self, delta):
         archetypes.create_cells(self.manager, self.number_to_clone)

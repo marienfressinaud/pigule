@@ -25,6 +25,12 @@ def test_clonable_incubate_depends_on_time():
     assert clonable.incubate(42) == 42
 
 
+def test_clonable_incubate_depends_on_impact():
+    clonable = Clonable()
+
+    assert clonable.incubate(4, impact=0.25) == 1
+
+
 def test_mood():
     assert Mood(constants.WEATHER_SUNNY).value == constants.MOOD_HAPPY
     assert Mood(constants.WEATHER_RAINY).value == constants.MOOD_SAD

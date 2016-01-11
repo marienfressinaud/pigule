@@ -21,8 +21,8 @@ class Clonable(Component):
         self.fertility = fertility
         self.time_of_incubation = 0
 
-    def incubate(self, time):
-        self.time_of_incubation += self.fertility * time
+    def incubate(self, time, impact=1):
+        self.time_of_incubation += self.fertility * impact * time
         number_to_clone = int(self.time_of_incubation)
         self.time_of_incubation %= 1
 
@@ -38,6 +38,9 @@ class Mood(Component):
 
     def weather_changing(self, weather):
         self.value = constants.MOOD_HAPPY if weather == constants.WEATHER_SUNNY else constants.MOOD_SAD
+
+    def impact(self):
+        return constants.MOOD_IMPACT[self.value]
 
 
 class Mortality(Component):

@@ -17,25 +17,23 @@ def test_mood_swings(manager):
     assert mood.value == constants.MOOD_SAD
 
 
-def test_mood_swings_impacts_fertility(manager_with_master_cell):
-    master_cell = next(manager_with_master_cell.entities())
-    clonable = master_cell.get_component(Clonable)
-    MoodSwings().register_to(manager_with_master_cell)
-
-    assert clonable.fertility == 1
-
-    manager_with_master_cell.environment['weather'] = constants.WEATHER_RAINY
-    manager_with_master_cell.update(1)
-
-    assert clonable.fertility == 0.25
-
-
 def test_reproduction(manager_with_master_cell):
     Reproduction().register_to(manager_with_master_cell)
     manager_with_master_cell.update(1)
 
     assert len(list(manager_with_master_cell.entities())) == 2
     assert len(list(manager_with_master_cell.entities_by_type(Clonable))) == 1
+
+
+def test_reproduction_impacted_by_mood_swings(manager_with_master_cell):
+    MoodSwings().register_to(manager_with_master_cell)
+    Reproduction().register_to(manager_with_master_cell)
+    manager_with_master_cell.environment['weather'] = constants.WEATHER_RAINY
+    expected_number_cloned = int(4 * constants.MOOD_IMPACT[constants.MOOD_SAD])
+
+    manager_with_master_cell.update(4)
+
+    assert len(list(manager_with_master_cell.entities())) == 1 + expected_number_cloned
 
 
 def test_time(manager):
