@@ -15,7 +15,7 @@ Le monde continue de vivre même lorsque le joueur n'est pas connecté.
 - [x] Capacité pour la mère-nouricière de donner la vie
 - [x] Gestion d'une météo basique (pluie, soleil)
 - [x] Fertilité de la mère-nouricière en fonction de la météo
-- [ ] Gestion des attaques extérieures de la colonie
+- [x] Gestion des attaques extérieures de la colonie
 - [ ] Gestion de l'occupation des cellules-filles
   - gérer le bien-être de la mère
   - défendre la colonie
