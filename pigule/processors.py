@@ -5,6 +5,40 @@ import pigule.archetypes as archetypes
 from pigule.components import Age, Clonable, Mood, Mortality
 
 
+class Attack(Processor):
+    """Manage the attacks on the cell colony
+    """
+    def __init__(self, frequence=1, max_to_kill=1):
+        Processor.__init__(self)
+        self.frequence = frequence
+        self.cycle = 0
+        self.max_to_kill = max_to_kill
+
+    def should_execute_attack(self):
+        return self.cycle >= self.frequence
+
+    def number_to_kill(self):
+        return self.max_to_kill * int(self.cycle/self.frequence)
+
+    def pre_update(self, delta):
+        self.cycle += delta
+
+    def update(self, delta):
+        if not self.should_execute_attack():
+            return
+
+        cells_will_die = list(self.manager.entities_by_type(Mortality))
+        if len(cells_will_die) <= 0:
+            cells_will_die = list(self.manager.entities_by_type(Clonable))
+
+        for i, cell in enumerate(cells_will_die):
+            if i < self.number_to_kill():
+                self.manager.kill_entity(cell)
+
+    def post_update(self, delta):
+        self.cycle %= self.frequence
+
+
 class MoodSwings(EntityProcessor):
     """Manage mood changes for cells
     """
