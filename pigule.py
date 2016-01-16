@@ -35,10 +35,6 @@ class Game:
         while self.is_running:
             time.sleep(Game.TIME_TO_SLEEP)
             self.manager.update(Game.DELTA)
-            number_of_cells = len(list(self.manager.entities()))
-            current_weather = '☀' if self.manager.environment['weather'] == constants.WEATHER_SUNNY else '☔'
-            print('Number of cells: {0:3d} (weather: {1})'.format(number_of_cells, current_weather))
-            sys.stdout.flush()
 
             number_of_cells = len(list(self.manager.entities()))
             if number_of_cells >= 25:
@@ -50,11 +46,9 @@ class Game:
 
             if number_of_cells <= 0:
                 self.stop()
-                print('Looser...')
 
     def stop(self):
         self.is_running = False
-        print('This is the end...')
 
 
 if __name__ == '__main__':
