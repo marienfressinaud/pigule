@@ -1,6 +1,5 @@
 #!/bin/env python3
 
-import sys
 import time
 
 import daemonize
