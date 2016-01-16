@@ -51,6 +51,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game()
-    daemon_game = daemonize.daemonize(game)
+    daemon_game = daemonize.daemonize(Game)
     daemon_game.execute()
