@@ -3,6 +3,8 @@ import json
 import threading
 import os
 
+from pigule.api.server import ApiServer
+
 
 server_manager = None
 
@@ -12,6 +14,7 @@ class ApiHandler(socketserver.StreamRequestHandler):
     def setup(self):
         socketserver.StreamRequestHandler.setup(self)
         self.is_running = False
+        self.api_server = ApiServer(server_manager)
 
     def start(self):
         if self.is_running:
@@ -44,6 +47,9 @@ class ApiHandler(socketserver.StreamRequestHandler):
                 self.send_error('data must contain a `type` field')
             elif data['type'] == 'QUIT':
                 self.stop()
+            else:
+                result_data = self.api_server.handle(data)
+                self.send(result_data)
 
     def send_error(self, error_msg):
         # TODO: define a method to build data "auto-magically"

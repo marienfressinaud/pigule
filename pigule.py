@@ -7,7 +7,6 @@ import daemonize
 from pytity.manager import Manager
 
 import pigule.constants as constants
-import pigule.archetypes as archetypes
 from pigule.processors import Attack, MoodSwings, Reproduction, Time, Weather
 
 import pigule.api.handler as api_handler
@@ -31,7 +30,6 @@ class Game:
 
     def run(self):
         self.api_server_thread.start()
-        archetypes.create_master_cell(self.manager)
 
         while self.is_running:
             time.sleep(Game.TIME_TO_SLEEP)
