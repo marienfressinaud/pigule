@@ -25,5 +25,5 @@ Le monde continue de vivre même lorsque le joueur n'est pas connecté.
 
 Actions utilisateur :
 
-- [ ] générer la mère-nouricière
+- [x] générer la mère-nouricière
 - [ ] occuper les cellules-filles
