@@ -10,6 +10,8 @@ import pigule.constants as constants
 import pigule.archetypes as archetypes
 from pigule.processors import Attack, MoodSwings, Reproduction, Time, Weather
 
+import pigule.api.handler as api_handler
+
 
 class Game:
     TIME_TO_SLEEP = 1
@@ -25,12 +27,17 @@ class Game:
         Time().register_to(self.manager)
         Weather(constants.WEATHER_SUNNY, 10).register_to(self.manager)
 
+        self.api_server_thread = api_handler.setup(self.manager)
+
     def run(self):
+        self.api_server_thread.start()
         archetypes.create_master_cell(self.manager)
 
         while self.is_running:
             time.sleep(Game.TIME_TO_SLEEP)
             self.manager.update(Game.DELTA)
+
+        self.api_server_thread.stop()
 
     def stop(self):
         self.is_running = False
