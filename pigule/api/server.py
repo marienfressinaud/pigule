@@ -1,36 +1,19 @@
 import pigule.archetypes as archetypes
 
+import pigule.api.answer_creators as answer_creators
 
-# TODO: refactor to facilitate tests
+
 class ApiServer:
     def __init__(self, manager):
         self.manager = manager
 
-    def handle(self, data):
-        if data['type'] == 'CREATE_MASTER_CELL':
-            return self.create_master_cell()
-        if data['type'] == 'SHOW_STATE':
-            return self.state()
-        else:
-            return self.error('{} is not a valid data type'.format(data['type']))
-
     def create_master_cell(self):
         archetypes.create_master_cell(self.manager)
-        return {
-            'type': 'NEW_MASTER_CELL'
-        }
+        return answer_creators.new_master_cell()
 
-    def state(self):
+    def show_state(self):
         cells = list(self.manager.entities())
-        return {
-            'type': 'STATE',
-            'payload': {
-                'cells_number': len(cells)
-            }
-        }
+        return answer_creators.state(len(cells))
 
-    def error(self, error_msg):
-        return {
-            'type': 'ERROR',
-            'error': error_msg
-        }
+    def quit(self):
+        return answer_creators.quit()

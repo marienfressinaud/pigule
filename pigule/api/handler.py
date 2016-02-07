@@ -4,6 +4,7 @@ import threading
 import os
 
 from pigule.api.server import ApiServer
+import pigule.api.answer_creators as answer_creators
 
 
 server_manager = None
@@ -33,31 +34,36 @@ class ApiHandler(socketserver.StreamRequestHandler):
     def send(self, data):
         self.wfile.write(json.dumps(data).encode('utf-8'))
 
+    def get_answer_from_data(self, data):
+        api_server_method_name = data['type'].lower()
+        if 'type' not in data:
+            answer = answer_creators.error(
+                'data must contain a `type` field'
+            )
+        elif hasattr(self.api_server, api_server_method_name):
+            answer = getattr(self.api_server, api_server_method_name)()
+        else:
+            answer = answer_creators.error(
+                '{} is not a valid data type'.format(data['type'])
+            )
+
+        return answer
+
     def handle(self):
-        # TODO: refactor handle method
         self.start()
         while self.is_running:
             try:
                 data = self.read_data()
+                answer = self.get_answer_from_data(data)
             except ValueError:
-                self.send_error('data is not a valid JSON object')
-                continue
+                answer = answer_creators.error(
+                    'data is not a valid JSON object'
+                )
 
-            if 'type' not in data:
-                self.send_error('data must contain a `type` field')
-            elif data['type'] == 'QUIT':
+            self.send(answer)
+
+            if answer['type'] == 'QUIT':
                 self.stop()
-            else:
-                result_data = self.api_server.handle(data)
-                self.send(result_data)
-
-    def send_error(self, error_msg):
-        # TODO: define a method to build data "auto-magically"
-        data = {
-            'type': 'ERROR',
-            'error': 'INVALID REQUEST: {}'.format(error_msg)
-        }
-        self.send(data)
 
 
 def setup(manager):
